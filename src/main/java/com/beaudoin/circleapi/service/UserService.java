@@ -43,7 +43,7 @@ public class UserService {
 
         User user = userRepo.findById(id).get();
        
-        return user != null ? true : false;
+        return user == null ? true : false;
     }
 
 }
