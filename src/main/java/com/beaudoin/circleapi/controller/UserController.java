@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.beaudoin.circleapi.data.model.User;
@@ -48,10 +49,43 @@ public class UserController {
         boolean responseCode = false;
 
         if (user != null) {
-            responseCode = userService.postUser(user);
+            responseCode = userService.saveUser(user);
             if (responseCode)
                 return new ResponseEntity<Integer>(200, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(422, HttpStatus.BAD_REQUEST);
     }
+
+    @RequestMapping(value = "/update-user", method = RequestMethod.PUT)
+    public ResponseEntity<Integer> updateUser(@RequestParam long id, @RequestBody User updatedUser) {
+        User oldUser = userService.getUserById(id);
+        
+        if (oldUser != null) {
+            oldUser.setUserEmail(updatedUser.getUserEmail());
+            oldUser.setUserFName(updatedUser.getUserFName());
+            oldUser.setUserLName(updatedUser.getUserLName());
+            oldUser.setUserMiddleInitial(updatedUser.getUserMiddleInitial());
+            oldUser.setUserImage(updatedUser.getUserImage());
+            oldUser.setUserPassword(updatedUser.getUserPassword());
+
+            boolean userUpdated = userService.saveUser(oldUser);
+
+            if (userUpdated) {
+                return new ResponseEntity<>(200, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delete-user", method=RequestMethod.DELETE)
+    public ResponseEntity<Integer> deleteUser(@PathVariable long id) {
+        User userToDelete = userService.getUserById(id);
+        if (userToDelete != null) {
+            userService.deleteUserById(id);
+
+            return new ResponseEntity<>(200, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(200, HttpStatus.BAD_REQUEST);
+    }
+    
 }

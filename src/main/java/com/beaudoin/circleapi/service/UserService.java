@@ -18,7 +18,7 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public boolean postUser(User user) {
+    public boolean saveUser(User user) {
         if (user != null) {
             try {
                 userRepo.save(user);
@@ -36,6 +36,14 @@ public class UserService {
 
     public List findAllUsers() {
         return (List) userRepo.findAll();
+    }
+
+    public boolean deleteUserById(long id) {
+        userRepo.deleteById(id);
+
+        User user = userRepo.findById(id).get();
+       
+        return user != null ? true : false;
     }
 
 }
