@@ -3,6 +3,7 @@ package com.beaudoin.circleapi.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,15 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @RequestMapping(value = "/get-user/{id}", method = RequestMethod.GET)
+    public ResponseEntity<User> getUserById(@PathVariable long id) {
+        if (id > 0) {
+            User user = userService.getUserById(id);
+            if (user == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/post-user", method = RequestMethod.POST)

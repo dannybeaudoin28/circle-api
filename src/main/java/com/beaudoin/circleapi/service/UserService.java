@@ -28,4 +28,8 @@ public class UserService {
         return false;
     }
 
+    public User getUserById(long id) {
+        return userRepo.findById(id).get();
+    }
+
 }
