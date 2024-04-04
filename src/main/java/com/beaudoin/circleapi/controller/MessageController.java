@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,18 @@ public class MessageController {
     @Autowired
     public MessageController(MessageService messageService) { 
         this.messageService = messageService;
+    }
+
+    @RequestMapping(value = "/post-message", method = RequestMethod.POST)
+    public ResponseEntity<Integer> postMessage(@RequestBody Message message) {
+        boolean responseCode = false;
+
+        if (message != null) {
+            responseCode = messageService.saveMessage(message);
+            if (responseCode) 
+                return new ResponseEntity<>(422, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(422, HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/get-messages", method = RequestMethod.GET)
