@@ -1,5 +1,7 @@
 package com.beaudoin.circleapi.data.model;
 
+import java.util.Arrays;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +11,13 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "USER_TABLE")
 public class User {
+
+    @Override
+    public String toString() {
+        return "User [userId=" + userId + ", userEmail=" + userEmail + ", userFName=" + userFName + ", userLName="
+                + userLName + ", userMiddleInitial=" + userMiddleInitial + ", userPassword=" + userPassword
+                + ", userImage=" + Arrays.toString(userImage) + "]";
+    }
 
     public User() {}
 

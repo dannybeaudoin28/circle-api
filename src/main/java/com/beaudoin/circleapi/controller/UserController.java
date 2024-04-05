@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import com.beaudoin.circleapi.data.model.User;
 import com.beaudoin.circleapi.service.UserService;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/users")
 public class UserController {
     private UserService userService;
@@ -27,7 +29,7 @@ public class UserController {
 
     @RequestMapping(value = "/get-users", method = RequestMethod.GET)
     public ResponseEntity<List<User>> getAllUsers() {
-        List userList = userService.findAllUsers();
+        List<User> userList = userService.findAllUsers();
         if (!userList.isEmpty())
             return new ResponseEntity<>(userList, HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -46,6 +48,7 @@ public class UserController {
 
     @RequestMapping(value = "/post-user", method = RequestMethod.POST)
     public ResponseEntity<Integer> postUser(@RequestBody User user) {
+        System.out.println(user.toString());
         boolean responseCode = false;
 
         if (user != null) {
@@ -57,8 +60,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/update-user", method = RequestMethod.PUT)
-    public ResponseEntity<Integer> updateUser(@RequestParam long id, @RequestBody User updatedUser) {
-        User oldUser = userService.getUserById(id);
+    public ResponseEntity<Integer> updateUser(@RequestBody User updatedUser) {
+        System.out.println(updatedUser.toString());
+        User oldUser = userService.getUserById(updatedUser.getUserId());
         
         if (oldUser != null) {
             oldUser.setUserEmail(updatedUser.getUserEmail());
@@ -77,7 +81,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete-user", method=RequestMethod.DELETE)
+    @RequestMapping(value = "/delete-user/{id}", method=RequestMethod.DELETE)
     public ResponseEntity<Integer> deleteUser(@PathVariable long id) {
         User userToDelete = userService.getUserById(id);
         if (userToDelete != null) {

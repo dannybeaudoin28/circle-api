@@ -40,10 +40,7 @@ public class UserService {
 
     public boolean deleteUserById(long id) {
         userRepo.deleteById(id);
-
-        User user = userRepo.findById(id).get();
-       
-        return user == null ? true : false;
+        return true;
     }
 
 }
