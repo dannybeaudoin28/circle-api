@@ -3,6 +3,8 @@ package com.beaudoin.circleapi.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.beaudoin.circleapi.data.model.User;
@@ -10,6 +12,11 @@ import com.beaudoin.circleapi.data.repository.UserRepository;
 
 @Service
 public class UserService {
+
+    @Bean
+    private BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     private UserRepository userRepo;
 
@@ -21,6 +28,8 @@ public class UserService {
     public boolean saveUser(User user) {
         if (user != null) {
             try {
+                String encryptedPw = bCryptPasswordEncoder().encode(user.getUserPassword());
+                user.setUserPassword(encryptedPw);
                 userRepo.save(user);
                 return true;
             } catch (Exception e) {
