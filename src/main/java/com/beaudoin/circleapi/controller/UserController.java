@@ -48,7 +48,6 @@ public class UserController {
 
     @RequestMapping(value = "/post-user", method = RequestMethod.POST)
     public ResponseEntity<Integer> postUser(@RequestBody User user) {
-        System.out.println(user.toString());
         boolean responseCode = false;
 
         if (user != null) {
