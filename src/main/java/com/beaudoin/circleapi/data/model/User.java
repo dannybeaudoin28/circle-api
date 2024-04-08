@@ -2,31 +2,27 @@ package com.beaudoin.circleapi.data.model;
 
 import java.util.Arrays;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "USER_TABLE")
 public class User {
-
-    @Override
-    public String toString() {
-        return "User [userId=" + userId + ", userEmail=" + userEmail + ", userFName=" + userFName + ", userLName="
-                + userLName + ", userMiddleInitial=" + userMiddleInitial + ", userPassword=" + userPassword
-                + ", userImage=" + Arrays.toString(userImage) + "]";
-    }
-
+    
     public User() {}
 
-    public User(String userEmail, String userFName, String userLName, char userMiddleInitial, String userPassword) {
+    public User(String userEmail, String userFName, String userLName, char userMiddleInitial, String userPassword,
+            byte[] userImage, String userRole) {
         this.userEmail = userEmail;
         this.userFName = userFName;
         this.userLName = userLName;
         this.userMiddleInitial = userMiddleInitial;
         this.userPassword = userPassword;
+        this.userImage = userImage;
+        this.userRole = userRole;
     }
 
     @Id
@@ -51,6 +47,9 @@ public class User {
 
     @Column(name = "USER_IMG")
     private byte[] userImage;
+
+    @Column(name = "USER_ROLE")
+    private String userRole;
 
     public long getUserId() {
         return userId;
@@ -107,4 +106,14 @@ public class User {
     public void setUserImage(byte[] userImage) {
         this.userImage = userImage;
     }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
+    
 }
