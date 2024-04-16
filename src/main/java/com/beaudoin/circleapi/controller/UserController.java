@@ -2,6 +2,8 @@ package com.beaudoin.circleapi.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.beaudoin.circleapi.data.model.User;
 import com.beaudoin.circleapi.service.UserService;
+import com.beaudoin.circleapi.utility.JwtUtil;
 
 @RestController
 @CrossOrigin("*")
@@ -28,15 +31,23 @@ public class UserController {
     }
 
     @RequestMapping(value = "/get-users", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> userList = userService.findAllUsers();
-        if (!userList.isEmpty())
-            return new ResponseEntity<>(userList, HttpStatus.OK);
+    public ResponseEntity<List<User>> getAllUsers(HttpServletRequest request) {
+        System.out.println("Inside /get-users");
+        if (JwtUtil.validateJwtToken(request)) {
+            List<User> userList = userService.findAllUsers();
+
+            for (User user : userList) {
+                System.out.println(user.toString());
+            }
+
+            if (!userList.isEmpty())
+                return new ResponseEntity<>(userList, HttpStatus.OK);
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/get-user/{id}", method = RequestMethod.GET)
-    public ResponseEntity<User> getUserById(@PathVariable long id) {
+    public ResponseEntity<User> getUserById(@PathVariable long id, HttpServletRequest request) {
         if (id > 0) {
             User user = userService.getUserById(id);
             if (user != null) {
@@ -47,7 +58,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/post-user", method = RequestMethod.POST)
-    public ResponseEntity<Integer> postUser(@RequestBody User user) {
+    public ResponseEntity<Integer> postUser(@RequestBody User user, HttpServletRequest request) {
+        System.out.println("Inside post user");
         boolean responseCode = false;
 
         if (user != null) {
@@ -59,10 +71,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/update-user", method = RequestMethod.PUT)
-    public ResponseEntity<Integer> updateUser(@RequestBody User updatedUser) {
+    public ResponseEntity<Integer> updateUser(@RequestBody User updatedUser, HttpServletRequest request) {
         System.out.println(updatedUser.toString());
         User oldUser = userService.getUserById(updatedUser.getUserId());
-        
+
         if (oldUser != null) {
             oldUser.setUserEmail(updatedUser.getUserEmail());
             oldUser.setUserFName(updatedUser.getUserFName());
@@ -80,8 +92,8 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete-user/{id}", method=RequestMethod.DELETE)
-    public ResponseEntity<Integer> deleteUser(@PathVariable long id) {
+    @RequestMapping(value = "/delete-user/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Integer> deleteUser(@PathVariable long id, HttpServletRequest request) {
         User userToDelete = userService.getUserById(id);
         if (userToDelete != null) {
             boolean userDeleted = userService.deleteUserById(id);
@@ -90,5 +102,5 @@ public class UserController {
         }
         return new ResponseEntity<>(200, HttpStatus.BAD_REQUEST);
     }
-    
+
 }
