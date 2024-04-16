@@ -32,8 +32,13 @@ public class UserController {
 
     @RequestMapping(value = "/get-users", method = RequestMethod.GET)
     public ResponseEntity<List<User>> getAllUsers(HttpServletRequest request) {
-        System.out.println("Inside /get-users");
-        if (JwtUtil.validateJwtToken(request)) {
+        //TODO: create method inside JwtUtil to extract the roles, return them.
+        //      compare role to desired scope. ie: a user requires admin role for this endpoint 
+        //      if(JwtUtil.validateJwtToken(request) && userRole == "ROLE_ADMIN")
+        String bearerToken = request.getHeader("Authorization").substring(7);
+        List<String> roles = JwtUtil.extractAuthorities(bearerToken);
+
+        if (JwtUtil.validateJwtToken(request) && roles.contains("ROLE_ADMIN")) {
             List<User> userList = userService.findAllUsers();
 
             for (User user : userList) {

@@ -26,22 +26,18 @@ public class JwtUtil {
             .collect(Collectors.toList());
         
         return Jwts.builder()
-                .claim("email", email) // Add email as a claim
-                .claim("password", password) // Add password as a claim
+                .claim("email", email)
+                .claim("password", password) 
                 .claim("authorities", roles)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, secret) // Sign with HS512 algorithm and secret key
+                .signWith(SignatureAlgorithm.HS512, secret) 
                 .compact();
     }
     
 
     public static String extractFieldFromJWT(String token, String fieldName) {
-        try {
-            System.out.println("Inside Extract Field from JWT...");
-            
+        try {            
             Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-            
-            // Extract the value of the specified field from the claims
             String fieldValue = claims.get(fieldName, String.class);
             
             if (fieldValue != null) {
@@ -50,7 +46,6 @@ public class JwtUtil {
                 return null;
             }
         } catch (JwtException e) {
-            // Handle JWT parsing exceptions
             System.err.println("Error extracting field from JWT: " + e.getMessage());
             return null;
         }
@@ -61,11 +56,8 @@ public class JwtUtil {
     public static boolean validateToken(String token, String secret) {
         
         try {
-            System.out.println("Inside validate Token");
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            System.out.println("claims has been created");
             boolean isValid = !claims.getBody().getExpiration().before(new Date());
-            System.out.println("Is valid Token: " + isValid);
             return isValid;
         } catch (Exception e) {
             System.out.println(e);
