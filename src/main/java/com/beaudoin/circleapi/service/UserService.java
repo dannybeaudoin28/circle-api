@@ -43,6 +43,10 @@ public class UserService {
         return userRepo.findById(id).get();
     }
 
+    public User getUserByEmail(String email) {
+        return userRepo.findByUserEmail(email);
+    }
+
     public List findAllUsers() {
         return (List) userRepo.findAll();
     }

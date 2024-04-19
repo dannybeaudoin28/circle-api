@@ -1,6 +1,7 @@
 package com.beaudoin.circleapi.controller;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.beaudoin.circleapi.data.model.SocialConnection;
 import com.beaudoin.circleapi.data.model.User;
 import com.beaudoin.circleapi.service.UserService;
 import com.beaudoin.circleapi.utility.JwtUtil;
@@ -32,19 +34,12 @@ public class UserController {
 
     @RequestMapping(value = "/get-users", method = RequestMethod.GET)
     public ResponseEntity<List<User>> getAllUsers(HttpServletRequest request) {
-        //TODO: create method inside JwtUtil to extract the roles, return them.
-        //      compare role to desired scope. ie: a user requires admin role for this endpoint 
-        //      if(JwtUtil.validateJwtToken(request) && userRole == "ROLE_ADMIN")
+
         String bearerToken = request.getHeader("Authorization").substring(7);
         List<String> roles = JwtUtil.extractAuthorities(bearerToken);
 
         if (JwtUtil.validateJwtToken(request) && roles.contains("ROLE_ADMIN")) {
             List<User> userList = userService.findAllUsers();
-
-            for (User user : userList) {
-                System.out.println(user.toString());
-            }
-
             if (!userList.isEmpty())
                 return new ResponseEntity<>(userList, HttpStatus.OK);
         }
@@ -54,10 +49,32 @@ public class UserController {
     @RequestMapping(value = "/get-user/{id}", method = RequestMethod.GET)
     public ResponseEntity<User> getUserById(@PathVariable long id, HttpServletRequest request) {
         if (id > 0) {
+            System.out.println("Inside get-user by id");
+
             User user = userService.getUserById(id);
+
             if (user != null) {
                 return new ResponseEntity<>(user, HttpStatus.OK);
             }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "/get-user-email/{email}", method = RequestMethod.GET)
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email, HttpServletRequest request) {
+        System.out.println("Inside get by email");
+
+        String bearerToken = request.getHeader("Authorization").substring(7);
+        List<String> roles = JwtUtil.extractAuthorities(bearerToken);
+
+        if (JwtUtil.validateJwtToken(request) && roles.contains("ROLE_ADMIN")) {
+            if (email.length() > 0) {
+                User user = userService.getUserByEmail(email);
+                if (user != null) {
+                    return new ResponseEntity<>(user, HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -73,6 +90,25 @@ public class UserController {
                 return new ResponseEntity<Integer>(200, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(422, HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "/{userId}/connections/{friendId}", method = RequestMethod.POST)
+    public ResponseEntity<?> addSocialConnection(@PathVariable long userId, @PathVariable long friendId, HttpServletRequest request) {
+        SocialConnection socialConnection = new SocialConnection();
+
+        System.out.println("USER ID IS: " + userId);
+        System.out.println("Social Connection: " + friendId);
+        User user = userService.getUserById(userId);
+        User friend = userService.getUserById(friendId);
+
+        if(user != null) {
+            socialConnection.setUserID(userId);
+            socialConnection.setFriendUser(friend);
+            user.getSocialConnections().add(socialConnection);
+            userService.saveUser(user);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/update-user", method = RequestMethod.PUT)

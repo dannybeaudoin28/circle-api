@@ -29,10 +29,12 @@ public class AuthenticationController {
     public String login(@RequestBody LoginDTO login) {
         System.out.println("Logging User details: UserEmail: " + login.getUserEmail());
         UserDetails user = customUserDetailsService.loadUserByUsername(login.getUserEmail());
+        System.out.println("user created");
 
         //TODO : currently when the user has a valid email and pw it works as intended. if just invalid email error occurs
         // Check if the provided password matches the hashed password from the database
         if (bCryptPasswordEncoder.matches(login.getUserPassword(), user.getPassword())) {
+            System.out.println("passwords matched");
             String jwtToken = JwtUtil.generateToken(user.getUsername(), user.getPassword(), user.getAuthorities());
             System.out.println("Token: " + jwtToken);
             return jwtToken;

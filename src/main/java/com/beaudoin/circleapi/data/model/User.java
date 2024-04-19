@@ -1,11 +1,15 @@
 package com.beaudoin.circleapi.data.model;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -23,6 +27,7 @@ public class User {
         this.userPassword = userPassword;
         this.userImage = userImage;
         this.userRole = userRole;
+        this.socialConnections = new ArrayList<>();
     }
 
     @Id
@@ -50,6 +55,9 @@ public class User {
 
     @Column(name = "USER_ROLE")
     private String userRole;
+
+    @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<SocialConnection> socialConnections;
 
     public long getUserId() {
         return userId;
@@ -113,6 +121,14 @@ public class User {
 
     public void setUserRole(String userRole) {
         this.userRole = userRole;
+    }
+
+    public List<SocialConnection> getSocialConnections() {
+        return socialConnections;
+    }
+
+    public void setSocialConnections(List<SocialConnection> socialConnections) {
+        this.socialConnections = socialConnections;
     }
 
     
