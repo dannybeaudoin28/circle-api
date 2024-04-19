@@ -1,34 +1,31 @@
 package com.beaudoin.circleapi.service;
 
-import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import com.beaudoin.circleapi.data.model.Message;
+import com.beaudoin.circleapi.data.model.User;
 import com.beaudoin.circleapi.data.repository.MessageRepository;
+import com.beaudoin.circleapi.data.repository.UserRepository;
 
 @Service
 public class MessageService {
+    
+    @Autowired
     private MessageRepository messageRepo;
 
-    @Autowired
-    public MessageService(MessageRepository messageRepo) {
-        this.messageRepo = messageRepo;
+    public void sendMessage(long senderId, User receiver, String text) {
+        Message message = new Message();
+        message.setMessageSenderId(senderId);
+        message.setMessageReceiver(receiver);
+        message.setMessageBody(text);
+
+        messageRepo.save(message);
     }
 
-    public boolean saveMessage(Message message) {
-        if (message != null) {
-            try {
-                messageRepo.save(message);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-
-    public List findAllMessages() {
-        return (List) messageRepo.findAll();
+    public List findAllMessages(long id1, long id2) {
+        return (List) messageRepo.findMessagesBetweenUsers(id1, id2);
     }
 }

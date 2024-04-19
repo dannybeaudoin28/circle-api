@@ -15,7 +15,6 @@ public class SocialConnection {
 
     public SocialConnection() {}
 
-
     @Id
     @GeneratedValue
     @Column(name = "SOCIAL_CONNECTION_ID")

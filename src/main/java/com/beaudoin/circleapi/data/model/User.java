@@ -28,6 +28,7 @@ public class User {
         this.userImage = userImage;
         this.userRole = userRole;
         this.socialConnections = new ArrayList<>();
+        this.messages = new ArrayList<>();
     }
 
     @Id
@@ -58,6 +59,9 @@ public class User {
 
     @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<SocialConnection> socialConnections;
+
+    @OneToMany(mappedBy = "messageSenderId", cascade = CascadeType.ALL)
+    private List<Message> messages = new ArrayList<>();
 
     public long getUserId() {
         return userId;
@@ -129,6 +133,14 @@ public class User {
 
     public void setSocialConnections(List<SocialConnection> socialConnections) {
         this.socialConnections = socialConnections;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
     

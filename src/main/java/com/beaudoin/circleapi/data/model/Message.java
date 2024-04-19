@@ -1,46 +1,27 @@
 package com.beaudoin.circleapi.data.model;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
+import javax.persistence.*;
 
 @Entity
 @Table(name = "MESSAGE_TABLE")
 public class Message {
 
-    public Message () {}
-
-    public Message(String messageBody, Date messageSentDate) {
-        this.messageBody = messageBody;
-        this.messageSentDate = messageSentDate;
-        this.messageDeleted = false;
-    }
+    public Message() {}
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MESSAGE_ID")
     private long messageId;
 
-    @Column(name = "MESSAGE_BODY")
+    @Column(name = "MESSAGE_BODY", nullable = false)
     private String messageBody;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Column(name = "MESSAGE_SENT_DATE")
-    private Date messageSentDate;
+    @Column(name = "MESSAGE_SENDER_ID")
+    private long messageSenderId;
 
-    @Column(name = "MESSAGE_DELETED")
-    private boolean messageDeleted;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Column(name = "MESSAGE_DELETED_DATE")
-    private Date messageDeletedDate;
+    @ManyToOne
+    @JoinColumn(name = "MESSAGE_RECEIVER")
+    private User messageReceiver;
 
     public long getMessageId() {
         return messageId;
@@ -58,27 +39,19 @@ public class Message {
         this.messageBody = messageBody;
     }
 
-    public Date getMessageSentDate() {
-        return messageSentDate;
+    public User getMessageReceiver() {
+        return messageReceiver;
     }
 
-    public void setMessageSentDate(Date messageSentDate) {
-        this.messageSentDate = messageSentDate;
+    public void setMessageReceiver(User messageReceiver) {
+        this.messageReceiver = messageReceiver;
     }
 
-    public boolean isMessageDeleted() {
-        return messageDeleted;
+    public long getMessageSenderId() {
+        return messageSenderId;
     }
 
-    public void setMessageDeleted(boolean messageDeleted) {
-        this.messageDeleted = messageDeleted;
+    public void setMessageSenderId(long messageSenderId) {
+        this.messageSenderId = messageSenderId;
     }
-
-    public Date getMessageDeletedDate() {
-        return messageDeletedDate;
-    }
-
-    public void setMessageDeletedDate(Date messageDeletedDate) {
-        this.messageDeletedDate = messageDeletedDate;
-    }   
 }

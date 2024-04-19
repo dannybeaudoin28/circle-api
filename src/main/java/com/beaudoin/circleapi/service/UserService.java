@@ -39,12 +39,25 @@ public class UserService {
         return false;
     }
 
+    public void updateUser(User user) {
+        if (user != null) {
+            userRepo.save(user);
+        }
+    }
+
     public User getUserById(long id) {
         return userRepo.findById(id).get();
     }
 
     public User getUserByEmail(String email) {
-        return userRepo.findByUserEmail(email);
+        User user = userRepo.findByUserEmail(email);
+        System.out.println(user.toString());
+        return user;
+    }
+
+    public List<User> getUsersByEmail(String email) {
+        List<User> userList = userRepo.findAllByUserEmail(email);
+        return userList;
     }
 
     public List findAllUsers() {

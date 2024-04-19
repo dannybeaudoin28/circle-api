@@ -14,6 +14,7 @@ public class LoginDTO {
 
     private String userEmail;
     private String userPassword;
+    
     public String getUserEmail() {
         return userEmail;
     }
@@ -28,6 +29,13 @@ public class LoginDTO {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginDTO [userEmail=" + userEmail + ", userPassword=" + userPassword + ", getUserEmail()="
+                + getUserEmail() + ", getUserPassword()=" + getUserPassword() + ", getClass()=" + getClass()
+                + ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
     }
 
     

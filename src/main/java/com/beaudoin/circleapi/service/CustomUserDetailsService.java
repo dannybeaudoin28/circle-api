@@ -35,7 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             .username(user.getUserEmail()) // using email as username
             .password(user.getUserPassword()) // You might need to encode the password here
             .roles(user.getUserRole()) // Assuming roles are stored as strings in the User entity
-            .authorities(new SimpleGrantedAuthority("ROLE_" + user.getUserRole()))
+            .authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))
             .build();
     }
 

@@ -79,6 +79,24 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @RequestMapping(value = "/get-users-email/{email}", method = RequestMethod.GET)
+    public ResponseEntity<List<User>> getUsersByEmail(@PathVariable String email, HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization").substring(7);
+        List<String> roles = JwtUtil.extractAuthorities(bearerToken);
+
+        if (JwtUtil.validateJwtToken(request) && roles.contains("ROLE_ADMIN")) {
+            if (email.length() > 0) {
+                // User user = userService.getUserByEmail(email);
+                List<User> users = userService.getUsersByEmail(email);
+                if (users.size() > 0) {
+                    return new ResponseEntity<>(users, HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     @RequestMapping(value = "/post-user", method = RequestMethod.POST)
     public ResponseEntity<Integer> postUser(@RequestBody User user, HttpServletRequest request) {
         System.out.println("Inside post user");
@@ -105,7 +123,7 @@ public class UserController {
             socialConnection.setUserID(userId);
             socialConnection.setFriendUser(friend);
             user.getSocialConnections().add(socialConnection);
-            userService.saveUser(user);
+            userService.updateUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
