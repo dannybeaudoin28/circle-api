@@ -12,9 +12,9 @@ import com.beaudoin.circleapi.data.model.Message;
 @Repository
 public interface MessageRepository extends CrudRepository<Message, Long> {
 
-    @Query("SELECT m FROM Message m " +
-            "WHERE (m.messageSenderId = :userId1 AND m.messageReceiver.userId = :userId2) " +
-            "   OR (m.messageSenderId = :userId2 AND m.messageReceiver.userId = :userId1)")
-    List<Message> findMessagesBetweenUsers(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
+    // @Query("SELECT m FROM Message m " +
+    //         "WHERE (m.messageSender = :userId1 AND m.messageReceiver = :userId2) " +
+    //         "   OR (m.messageSender = :userId2 AND m.messageReceiver = :userId1)")
+    // List<Message> findMessagesBetweenUsers(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 
 }

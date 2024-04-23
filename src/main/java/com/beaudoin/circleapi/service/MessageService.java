@@ -16,16 +16,17 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepo;
 
-    public void sendMessage(long senderId, User receiver, String text) {
+    public void sendMessage(long senderId, long receiverId, String text) {
         Message message = new Message();
         message.setMessageSenderId(senderId);
-        message.setMessageReceiver(receiver);
+        message.setMessageReceiverId(receiverId);
         message.setMessageBody(text);
 
         messageRepo.save(message);
     }
 
     public List findAllMessages(long id1, long id2) {
-        return (List) messageRepo.findMessagesBetweenUsers(id1, id2);
+        //return (List) messageRepo.findMessagesBetweenUsers(id1, id2);
+        return (List<Message>) messageRepo.findAll();
     }
 }

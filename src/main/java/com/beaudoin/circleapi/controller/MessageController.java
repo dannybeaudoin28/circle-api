@@ -33,22 +33,13 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/post-message", method = RequestMethod.POST)
-    public ResponseEntity<Integer> postMessage(@RequestBody Message message, HttpServletRequest request) {
+    public ResponseEntity<?> postMessage(@RequestBody Message message, HttpServletRequest request) {
         System.out.println("inside post-message");
         boolean responseCode = false;
 
         if (message != null) {
-            messageService.sendMessage(message.getMessageSenderId(), message.getMessageReceiver(), message.getMessageBody());
-
-            System.out.println("id is: " + message.getMessageId());
-
-            User user = userService.getUserById(message.getMessageSenderId());
-
-            if (user != null) {
-                user.getMessages().add(message);
-                userService.updateUser(user);
-            }
-            return new ResponseEntity<>(422, HttpStatus.CREATED);
+            messageService.sendMessage(message.getMessageSenderId(), message.getMessageReceiverId(), message.getMessageBody());
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(422, HttpStatus.BAD_REQUEST);
     }

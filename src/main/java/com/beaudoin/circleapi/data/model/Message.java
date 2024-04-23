@@ -19,9 +19,8 @@ public class Message {
     @Column(name = "MESSAGE_SENDER_ID")
     private long messageSenderId;
 
-    @ManyToOne
-    @JoinColumn(name = "MESSAGE_RECEIVER")
-    private User messageReceiver;
+    @Column(name = "MESSAGE_RECEIVER_ID")
+    private long messageReceiverId;
 
     public long getMessageId() {
         return messageId;
@@ -39,14 +38,6 @@ public class Message {
         this.messageBody = messageBody;
     }
 
-    public User getMessageReceiver() {
-        return messageReceiver;
-    }
-
-    public void setMessageReceiver(User messageReceiver) {
-        this.messageReceiver = messageReceiver;
-    }
-
     public long getMessageSenderId() {
         return messageSenderId;
     }
@@ -54,4 +45,20 @@ public class Message {
     public void setMessageSenderId(long messageSenderId) {
         this.messageSenderId = messageSenderId;
     }
+
+    public long getMessageReceiverId() {
+        return messageReceiverId;
+    }
+
+    public void setMessageReceiverId(long messageReceiverId) {
+        this.messageReceiverId = messageReceiverId;
+    }
+
+    @Override
+    public String toString() {
+        return "Message [messageId=" + messageId + ", messageBody=" + messageBody + ", messageSenderId="
+                + messageSenderId + ", messageReceiverId=" + messageReceiverId + "]";
+    }
+
+    
 }
